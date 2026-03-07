@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import Script from "next/script";
 import { supabase } from "@/lib/supabase";
 import Navbar from "@/components/Navbar";
 import ItemCard from "@/components/ItemCard";
@@ -7,6 +9,23 @@ import { ShoppingBag, Search, Plus } from "lucide-react";
 interface HomePageProps {
   searchParams: Promise<{ category?: string; q?: string }>;
 }
+
+export const metadata: Metadata = {
+  title: "GbanaMarket – Buy and Sell Products Online",
+  description:
+    "GbanaMarket is an online marketplace where users can buy and sell products easily. Shop trusted sellers in Liberia.",
+  keywords: [
+    "gbanamarket",
+    "online marketplace",
+    "buy and sell",
+    "liberia marketplace",
+    "monrovia shopping",
+    "classified ads",
+  ],
+  alternates: {
+    canonical: "https://gbanamarket.vercel.app",
+  },
+};
 
 export default async function HomePage({ searchParams }: HomePageProps) {
   const params = await searchParams;

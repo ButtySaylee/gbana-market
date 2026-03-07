@@ -1,11 +1,20 @@
 import type { MetadataRoute } from "next";
+import { supabase } from "@/lib/supabase";
 
-const BASE_URL = "https://gbana-market.vercel.app";
+const BASE_URL = "https://gbanamarket.vercel.app";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  return [
+  // Fetch all approved listings
+  const { data: listings } = await supabase
+    .from("listings")
+    .select("id, created_at, is_sold")
+    .eq("is_approved", true)
+    .order("created_at", { ascending: false });
+
+  // Create sitemap entries for static pages
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: `${BASE_URL}/`,
       lastModified: now,
@@ -18,11 +27,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    {
-      url: `${BASE_URL}/admin-portal`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.3,
-    },
   ];
+
+  // Create sitemap entries for all listing pages
+  const listingPages: MetadataRoute.Sitemap = (listings ?? []).map(
+    (listing) => ({
+      url: `${BASE_URL}/listings/${listing.id}`,
+      lastModified: new Date(listing.created_at),
+      changeFrequency: listing.is_sold ? "never" : "weekly",
+      priority: listing.is_sold ? 0.4 : 0.7,
+    })
+  );
+
+  return [...staticPages, ...listingPages];
 }

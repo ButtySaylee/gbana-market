@@ -4,10 +4,17 @@ const BASE_URL = "https://gbanamarket.vercel.app";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-    },
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/admin-portal"],
+      },
+      {
+        userAgent: "Googlebot",
+        allow: "/",
+      },
+    ],
     sitemap: `${BASE_URL}/sitemap.xml`,
     host: BASE_URL,
   };

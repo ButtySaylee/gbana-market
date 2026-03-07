@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Script from "next/script";
 import Navbar from "@/components/Navbar";
 import ShareButton from "@/components/ShareButton";
 import ImageCarousel from "@/components/ImageCarousel";
+import { productSchema, breadcrumbSchema } from "@/lib/schema";
 import { MessageCircle, MapPin, Tag, ArrowLeft } from "lucide-react";
 
 const categoryColors: Record<string, string> = {
@@ -16,6 +19,50 @@ const categoryColors: Record<string, string> = {
 
 interface Props {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+
+  const { data: listing } = await supabase
+    .from("listings")
+    .select("*")
+    .eq("id", id)
+    .eq("is_approved", true)
+    .single();
+
+  if (!listing) {
+    return {
+      title: "Listing Not Found",
+      description: "The listing you're looking for doesn't exist.",
+    };
+  }
+
+  return {
+    title: `${listing.title} | GbanaMarket`,
+    description: listing.description.substring(0, 160),
+    keywords: [listing.title, listing.category, listing.location],
+    openGraph: {
+      title: listing.title,
+      description: listing.description,
+      type: "website",
+      url: `https://gbanamarket.vercel.app/listings/${listing.id}`,
+      images: [
+        {
+          url: listing.image_urls[0],
+          width: 800,
+          height: 600,
+          alt: listing.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: listing.title,
+      description: listing.description.substring(0, 160),
+      images: [listing.image_urls[0]],
+    },
+  };
 }
 
 export default async function ListingDetailPage({ params }: Props) {
@@ -35,8 +82,35 @@ export default async function ListingDetailPage({ params }: Props) {
   );
   const waLink = `https://wa.me/${listing.seller_whatsapp}?text=${waMessage}`;
 
+  // Structured data
+  const productData = productSchema(listing);
+  const breadcrumbData = breadcrumbSchema([
+    { name: "Home", url: "https://gbanamarket.vercel.app" },
+    {
+      name: listing.category,
+      url: `https://gbanamarket.vercel.app/?category=${listing.category}`,
+    },
+    { name: listing.title, url: `https://gbanamarket.vercel.app/listings/${listing.id}` },
+  ]);
+
   return (
     <main className="min-h-screen bg-slate-50">
+      {/* Structured Data - Product */}
+      <Script
+        id="product-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productData),
+        }}
+      />
+      {/* Structured Data - Breadcrumb */}
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbData),
+        }}
+      />
       <Navbar />
       <div className="max-w-2xl mx-auto px-4 py-8">
         <Link
