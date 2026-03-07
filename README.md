@@ -1,36 +1,204 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gbana Market 🛍️
+
+A modern two-sided marketplace platform for buying and selling items in Liberia. Sellers can list items with multiple images, and buyers can browse, search, and contact sellers directly via WhatsApp.
+
+**Live:** [gbana-market.vercel.app](https://gbana-market.vercel.app)
+
+## Features
+
+✅ **For Sellers:**
+- List items with up to 5 images
+- Set prices and mark as negotiable
+- Real-time notifications via WhatsApp
+- Track listing history
+
+✅ **For Buyers:**
+- Browse marketplace with categories (Electronics, Vehicles, Fashion, etc.)
+- Search and filter by location and category
+- View detailed product information with image carousel
+- Contact sellers directly on WhatsApp
+- Share listings with others
+
+✅ **For Admins:**
+- Review and approve pending listings
+- Bulk approve/reject listings
+- Edit listing details
+- Mark items as sold
+- View marketplace statistics
+
+## Tech Stack
+
+**Frontend:**
+- [Next.js 15](https://nextjs.org) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [Lucide Icons](https://lucide.dev/) - Icons
+
+**Backend & Database:**
+- [Supabase](https://supabase.com/) - PostgreSQL database + Auth
+- [Next.js API Routes](https://nextjs.org/docs/app/building-your-application/routing/route-handlers) - Backend
+
+**Storage & Services:**
+- [Cloudinary](https://cloudinary.com/) - Image hosting & optimization
+- [WhatsApp API](https://www.whatsapp.com/business) - Seller notifications
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Supabase account
+- Cloudinary account
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/yourusername/gbana-market.git
+cd gbana-market
+npm install
+```
+
+### 2. Setup Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# Cloudinary
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_cloudinary_upload_preset
+
+# Admin
+ADMIN_PASSWORD=your_secure_admin_password
+
+# Contact Information
+NEXT_PUBLIC_ADMIN_WHATSAPP=+231XXXXXXXXX
+NEXT_PUBLIC_MOMO_NUMBER=+231XXXXXXXXX
+```
+
+See [.env.example](.env.example) for all required variables.
+
+### 3. Setup Database
+
+1. Create a new Supabase project
+2. Run the SQL from [schema.sql](schema.sql) in your Supabase SQL Editor
+3. Update your `.env.local` with the Supabase credentials
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+gbana-market/
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   ├── admin-portal/      # Admin dashboard
+│   ├── listings/          # Public listing pages
+│   ├── sell/              # Seller listing form
+│   └── page.tsx           # Homepage
+├── components/            # React components
+├── lib/                   # Utilities (Supabase client)
+├── types/                 # TypeScript types
+├── public/                # Static assets
+├── schema.sql             # Database schema
+└── package.json           # Dependencies
+```
 
-## Learn More
+## Database Schema
 
-To learn more about Next.js, take a look at the following resources:
+### Listings Table
+- `id` - UUID primary key
+- `title` - Item title
+- `description` - Item description
+- `price` - Price (text for flexibility)
+- `category` - Category (Electronics, Vehicles, Fashion, Property, Home)
+- `image_urls` - Array of image URLs (supports up to 5 images)
+- `seller_whatsapp` - Seller's WhatsApp number
+- `location` - Liberian location
+- `is_negotiable` - Price negotiation allowed
+- `is_approved` - Listed publicly
+- `is_sold` - Marked as sold
+- `payment_status` - Payment tracking
+- `created_at` - Timestamp
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+See [.env.example](.env.example) and [SECURITY_CHECKLIST.md](SECURITY_CHECKLIST.md) for details on:
+- Which variables are safe to expose (`NEXT_PUBLIC_*`)
+- Which must remain secret (backend only)
+- Security best practices
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Deploy to Vercel (Recommended)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push your code to GitHub
+2. Go to [vercel.com/new](https://vercel.com/new)
+3. Select your repository
+4. Add all environment variables from `.env.example`
+5. Click Deploy
+
+See [Vercel Deployment Docs](https://vercel.com/docs/frameworks/nextjs) for details.
+
+## Security
+
+⚠️ **Before deploying**, read [SECURITY_CHECKLIST.md](SECURITY_CHECKLIST.md) for:
+- Environment variable setup
+- Sensitive data protection
+- Admin authentication
+- Pre-deployment verification
+
+## API Routes
+
+### Admin Authentication
+- `POST /api/admin/auth` - Authenticate admin with password
+
+### Listings Management
+- `POST /api/listings/approve/:id` - Approve listing
+- `POST /api/listings/bulk-approve` - Bulk approve listings
+- `POST /api/listings/reject` - Reject listing
+- `PUT /api/listings/update` - Update listing
+- `POST /api/listings/sold/:id` - Mark as sold
+- `POST /api/listings/relist/:id` - Relist sold item
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+Need help? Open an issue on GitHub or contact the team.
+
+## Roadmap
+
+- [ ] Payment integration (MTN MoMo, Orange Money)
+- [ ] Seller ratings & reviews
+- [ ] Wishlist functionality
+- [ ] Mobile app (React Native)
+- [ ] Item inspections & delivery options
+- [ ] Marketing dashboard for sellers
+
+---
+
+**Made with ❤️ for Liberia** 🇱🇷
+
