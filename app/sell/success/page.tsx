@@ -13,7 +13,7 @@ export default async function SellSuccessPage({ searchParams }: Props) {
   const { title } = await searchParams;
 
   const waMsg = encodeURIComponent(
-    `Hi, I just submitted a listing on Gbana Market titled "${title ?? "my item"}" and I'm ready to pay the listing fee. Please confirm my payment details.`
+    `Hi, I just submitted a listing on Gbana Market titled "${title ?? "my item"}". Please confirm and approve it.`
   );
 
   return (
@@ -31,11 +31,11 @@ export default async function SellSuccessPage({ searchParams }: Props) {
           </p>
 
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700 mb-6 text-left">
-            <p className="font-semibold mb-1">Pay your listing fee to go live</p>
+            {/* <p className="font-semibold mb-1">Pay your listing fee to go live</p> */}
             <p>
-              Send <strong>LRD 100 / USD 0.50</strong> via MoMo to{" "}
-              <strong>{MOMO}</strong>, then tap the button below so we can
-              confirm and approve your listing.
+              {/* Send <strong>LRD 100 / USD 0.50</strong> via MoMo to{" "}
+              <strong>{MOMO}</strong>, then tap the button below so we can */}
+              Tap the Whatsapp button below to confirm and approve your listing.
             </p>
           </div>
 

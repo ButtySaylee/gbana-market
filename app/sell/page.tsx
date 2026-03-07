@@ -330,13 +330,13 @@ export default function SellPage() {
                 Price is negotiable
               </span>
             </label>
-
+                
             {/* Fee notice */}
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-700">
+            {/* <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-700">
               <strong>Listing fee:</strong> LRD 100 / USD 0.50 — payment
               details will be sent to your WhatsApp after submission.
-            </div>
-
+            </div> */}
+                
             <button
               type="submit"
               disabled={submitting}
