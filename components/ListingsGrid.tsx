@@ -28,6 +28,10 @@ export default function ListingsGrid({
 
   const hasMore = listings.length < totalItems;
 
+  function isListingNew(createdAt: string): boolean {
+    return Date.now() - new Date(createdAt).getTime() < 24 * 60 * 60 * 1000;
+  }
+
   async function loadMore() {
     setLoading(true);
     const nextPage = page + 1;
@@ -52,7 +56,7 @@ export default function ListingsGrid({
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {listings.map((listing) => (
-          <ItemCard key={listing.id} listing={listing} />
+          <ItemCard key={listing.id} listing={listing} isNew={isListingNew(listing.created_at)} />
         ))}
       </div>
 

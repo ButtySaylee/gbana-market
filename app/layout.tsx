@@ -105,7 +105,7 @@ export default function RootLayout({
         {/* Preconnect to external domains */}
         <link rel="preconnect" href="https://res.cloudinary.com" />
       </head>
-      <body className={`${geistSans.variable} antialiased min-h-screen bg-slate-50`}>
+      <body suppressHydrationWarning className={`${geistSans.variable} antialiased min-h-screen bg-slate-50`}>
           <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-XXXXXXXXXX"} />
         {children}
       </body>

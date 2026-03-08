@@ -6,7 +6,7 @@ export function organizationSchema() {
     "@type": "Organization",
     name: "GbanaMarket",
     url: "https://gbanamarket.vercel.app",
-    logo: "https://gbanamarket.vercel.app/logo.png",
+    logo: "https://gbanamarket.vercel.app/logo.svg",
     sameAs: [
       "https://www.facebook.com/gbanamarket",
       "https://www.instagram.com/gbanamarket",

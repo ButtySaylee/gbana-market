@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabase";
 import { Loader2, CheckCircle2, XCircle, Clock, MessageCircle, Copy, Trash2 } from "lucide-react";
 
 interface PinResetRequest {
@@ -32,14 +31,18 @@ export default function PinResetAdmin({ adminToken }: PinResetAdminProps) {
 
   const fetchRequests = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
-      .from("pin_reset_requests")
-      .select("*")
-      .order("requested_at", { ascending: false });
-
-    setRequests((data ?? []) as PinResetRequest[]);
-    setLoading(false);
-  }, []);
+    try {
+      const res = await fetch("/api/admin/pin-reset-requests", {
+        headers: { Authorization: `Bearer ${adminToken}` },
+      });
+      const data = (await res.json()) as { requests?: PinResetRequest[] };
+      setRequests(data.requests ?? []);
+    } catch {
+      // silently fail — table will just stay as-is
+    } finally {
+      setLoading(false);
+    }
+  }, [adminToken]);
 
   useEffect(() => {
     fetchRequests();
