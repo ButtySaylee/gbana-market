@@ -77,6 +77,24 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             {"Liberia's trusted marketplace. Buy and sell used & new items safely via WhatsApp."}
           </p>
 
+          {/* Action Buttons */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <a
+              href="#listings"
+              className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1da851] text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-all active:scale-95"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              Shop Now
+            </a>
+            <a
+              href="/sell"
+              className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-[#002147] font-semibold px-6 py-3 rounded-full shadow-lg transition-all active:scale-95"
+            >
+              <Plus className="w-5 h-5" />
+              Sell Item
+            </a>
+          </div>
+
           {/* Search — hidden input preserves the active category */}
           <form method="GET" className="max-w-lg mx-auto relative">
             <input type="hidden" name="category" value={selectedCategory} />
@@ -123,7 +141,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       </section>
 
       {/* Listings Grid */}
-      <section className="max-w-6xl mx-auto px-4 py-8">
+      <section id="listings" className="max-w-6xl mx-auto px-4 py-8">
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl p-4 mb-6 text-sm">
             Error loading listings. Please try again later.

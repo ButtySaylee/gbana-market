@@ -43,6 +43,30 @@ export const CATEGORY_ICONS: Record<Category, string> = {
   Other: "📦",
 };
 
+export type OpportunityType = "job" | "scholarship";
+
+export interface Opportunity {
+  id: string;
+  created_at: string;
+  title: string;
+  description: string;
+  type: OpportunityType;
+  organization: string;
+  location: string;
+  deadline?: string;
+  requirements?: string;
+  application_url: string;
+  image_url: string;
+  is_active: boolean;
+}
+
+export const OPPORTUNITY_TYPES: OpportunityType[] = ["job", "scholarship"];
+
+export const OPPORTUNITY_TYPE_LABELS: Record<OpportunityType, string> = {
+  job: "Job",
+  scholarship: "Scholarship",
+};
+
 export const LIBERIA_LOCATIONS = [
   "Monrovia",
   "Paynesville",

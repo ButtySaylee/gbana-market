@@ -5,6 +5,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { Listing, CATEGORIES } from "@/types";
 import PinResetAdmin from "@/components/PinResetAdmin";
+import AdminOpportunities from "@/components/AdminOpportunities";
 import {
   CheckCircle,
   Trash2,
@@ -22,11 +23,12 @@ import {
   RotateCcw,
   Search,
   Key,
+  Briefcase,
 } from "lucide-react";
 
 const SELL_CATEGORIES = CATEGORIES.filter((c) => c !== "All");
 
-type Tab = "pending" | "all" | "pin-resets";
+type Tab = "pending" | "all" | "pin-resets" | "opportunities";
 
 interface EditForm {
   title: string;
@@ -130,7 +132,7 @@ export default function AdminPortalPage() {
 
   useEffect(() => {
     if (authed) {
-      fetchListings(tab);
+      if (tab !== "opportunities") fetchListings(tab);
       fetchStats();
     }
   }, [authed, tab, fetchListings, fetchStats]);
@@ -391,7 +393,7 @@ export default function AdminPortalPage() {
           <h1 className="text-white font-extrabold text-lg">Admin Portal</h1>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => { fetchListings(tab); fetchStats(); }}
+            onClick={() => { if (tab !== "opportunities") fetchListings(tab); fetchStats(); }}
             className="flex items-center gap-1 text-xs text-slate-300 hover:text-white transition-colors"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -431,7 +433,7 @@ export default function AdminPortalPage() {
       {/* Tabs */}
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-6xl mx-auto px-4 flex gap-1 pt-2">
-          {(["pending", "all", "pin-resets"] as Tab[]).map((t) => (
+          {(["pending", "all", "pin-resets", "opportunities"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -442,11 +444,14 @@ export default function AdminPortalPage() {
               }`}
             >
               {t === "pin-resets" && <Key className="w-4 h-4" />}
+              {t === "opportunities" && <Briefcase className="w-4 h-4" />}
               {t === "pending"
                 ? `Pending${stats.pending > 0 ? ` (${stats.pending})` : ""}`
                 : t === "all"
                 ? "All Listings"
-                : "PIN Resets"}
+                : t === "pin-resets"
+                ? "PIN Resets"
+                : "Opportunities"}
             </button>
           ))}
         </div>
@@ -456,8 +461,11 @@ export default function AdminPortalPage() {
         {/* PIN Resets Tab */}
         {tab === "pin-resets" && <PinResetAdmin adminToken={adminToken} />}
 
+        {/* Opportunities Tab */}
+        {tab === "opportunities" && <AdminOpportunities adminToken={adminToken} />}
+
         {/* Listings Tabs */}
-        {tab !== "pin-resets" && (
+        {tab !== "pin-resets" && tab !== "opportunities" && (
           <>
             {/* Search + filter */}
             <div className="flex gap-2 mb-4">
