@@ -81,34 +81,13 @@ export default function AdminOpportunities({ adminToken }: AdminOpportunitiesPro
     Authorization: `Bearer ${adminToken}`,
   });
 
-  const MONTH_ORDER = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  function parseDeadlineMonth(deadline: string | undefined): number {
-    if (!deadline) return 13;
-    const month = MONTH_ORDER.find(m => deadline.includes(m));
-    return month ? MONTH_ORDER.indexOf(month) : 13;
-  }
-
   const fetchOpportunities = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
       .from("opportunities")
-      .select("*");
-    
-    // Sort by month order (January to December)
-    const sorted = (data ?? []).sort((a, b) => {
-      const monthA = parseDeadlineMonth(a.deadline);
-      const monthB = parseDeadlineMonth(b.deadline);
-      if (monthA !== monthB) return monthA - monthB;
-      
-      // If same month, sort by newest first
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    });
-    
-    setOpportunities(sorted);
+      .select("*")
+      .order("created_at", { ascending: false });
+    setOpportunities(data ?? []);
     setLoading(false);
   }, []);
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 import { Opportunity } from "@/types";
 
 export async function GET(req: NextRequest) {
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     return month ? MONTH_ORDER.indexOf(month) : 13;
   }
 
-  let query = supabase
+  let query = supabaseAdmin
     .from("opportunities")
     .select(
       "id, created_at, title, description, type, organization, location, deadline, requirements, application_url, image_url, is_active",

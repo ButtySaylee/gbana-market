@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 import Navbar from "@/components/Navbar";
 import OpportunitiesGrid from "@/components/OpportunitiesGrid";
 import { Opportunity } from "@/types";
@@ -49,7 +49,7 @@ export default async function OpportunitiesPage({ searchParams }: OpportunitiesP
     return month ? MONTH_ORDER.indexOf(month) : 13;
   }
 
-  let query = supabase
+  let query = supabaseAdmin
     .from("opportunities")
     .select(
       "id, created_at, title, description, type, organization, location, deadline, requirements, application_url, image_url, is_active",
@@ -66,7 +66,12 @@ export default async function OpportunitiesPage({ searchParams }: OpportunitiesP
     query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%,organization.ilike.%${q}%`);
   }
 
-  const { data, count } = await query;
+  const { data, count, error } = await query;
+
+  if (error) {
+    console.error("[opportunities/page] Failed to fetch opportunities:", error.message);
+  }
+
   let opportunities: Opportunity[] = (data ?? []) as Opportunity[];
 
   // Sort by month order (January to December)
@@ -96,7 +101,7 @@ export default async function OpportunitiesPage({ searchParams }: OpportunitiesP
             </h1>
           </div>
           <p className="text-slate-300 text-sm sm:text-base max-w-md mx-auto mb-6">
-            Browse job openings and scholarship opportunities curated for Liberia.
+            Browse job openings and scholarship opportunities.
           </p>
 
           {/* Search */}

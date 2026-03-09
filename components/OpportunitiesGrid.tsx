@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown, Loader2 } from "lucide-react";
 import OpportunityCard from "@/components/OpportunityCard";
 import { Opportunity } from "@/types";
@@ -23,6 +23,12 @@ export default function OpportunitiesGrid({
   const [opportunities, setOpportunities] = useState<Opportunity[]>(initialOpportunities);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+
+  // Keep client state aligned with server results when filters/search change.
+  useEffect(() => {
+    setOpportunities(initialOpportunities);
+    setPage(1);
+  }, [initialOpportunities, typeFilter, searchQuery, itemsPerPage]);
 
   const hasMore = opportunities.length < totalItems;
 
