@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Geist } from "next/font/google";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import PWARegister from "@/components/PWARegister";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -119,6 +120,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://res.cloudinary.com" />
       </head>
       <body suppressHydrationWarning className={`${geistSans.variable} antialiased min-h-screen bg-slate-50`}>
+          <PWARegister />
           <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-XXXXXXXXXX"} />
         {children}
       </body>
