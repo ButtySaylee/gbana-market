@@ -4,6 +4,7 @@ import { Geist } from "next/font/google";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import PWARegister from "@/components/PWARegister";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -121,6 +122,7 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning className={`${geistSans.variable} antialiased min-h-screen bg-slate-50`}>
           <PWARegister />
+          <PWAInstallPrompt />
           <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-XXXXXXXXXX"} />
         {children}
       </body>
