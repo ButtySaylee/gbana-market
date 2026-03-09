@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { Opportunity } from "@/types";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -8,8 +9,17 @@ export async function GET(req: NextRequest) {
   const type = searchParams.get("type") ?? "all";
   const q = searchParams.get("q")?.trim() ?? "";
   const itemsPerPage = 12;
-  const start = (page - 1) * itemsPerPage;
-  const end = start + itemsPerPage - 1;
+
+  const MONTH_ORDER = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  function parseDeadlineMonth(deadline: string | undefined): number {
+    if (!deadline) return 13;
+    const month = MONTH_ORDER.find(m => deadline.includes(m));
+    return month ? MONTH_ORDER.indexOf(month) : 13;
+  }
 
   let query = supabase
     .from("opportunities")
@@ -17,9 +27,7 @@ export async function GET(req: NextRequest) {
       "id, created_at, title, description, type, organization, location, deadline, requirements, application_url, image_url, is_active",
       { count: "exact" }
     )
-    .eq("is_active", true)
-    .order("created_at", { ascending: false })
-    .range(start, end);
+    .eq("is_active", true);
 
   if (type !== "all") query = query.eq("type", type);
 
@@ -34,5 +42,22 @@ export async function GET(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  return NextResponse.json({ opportunities: data ?? [], total: count ?? 0 });
+  let opportunities: Opportunity[] = (data ?? []) as Opportunity[];
+
+  // Sort by month order (January to December)
+  opportunities = opportunities.sort((a, b) => {
+    const monthA = parseDeadlineMonth(a.deadline);
+    const monthB = parseDeadlineMonth(b.deadline);
+    if (monthA !== monthB) return monthA - monthB;
+    
+    // If same month, sort by newest first
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+
+  // Apply pagination after sorting
+  const start = (page - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  opportunities = opportunities.slice(start, end);
+
+  return NextResponse.json({ opportunities, total: count ?? 0 });
 }

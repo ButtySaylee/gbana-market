@@ -38,15 +38,24 @@ export default async function OpportunitiesPage({ searchParams }: OpportunitiesP
   const searchQuery = params?.q ?? "";
   const itemsPerPage = 12;
 
+  const MONTH_ORDER = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  function parseDeadlineMonth(deadline: string | undefined): number {
+    if (!deadline) return 13; // No deadline goes last
+    const month = MONTH_ORDER.find(m => deadline.includes(m));
+    return month ? MONTH_ORDER.indexOf(month) : 13;
+  }
+
   let query = supabase
     .from("opportunities")
     .select(
       "id, created_at, title, description, type, organization, location, deadline, requirements, application_url, image_url, is_active",
       { count: "exact" }
     )
-    .eq("is_active", true)
-    .order("created_at", { ascending: false })
-    .range(0, itemsPerPage - 1);
+    .eq("is_active", true);
 
   if (typeFilter !== "all") {
     query = query.eq("type", typeFilter);
@@ -58,7 +67,20 @@ export default async function OpportunitiesPage({ searchParams }: OpportunitiesP
   }
 
   const { data, count } = await query;
-  const opportunities: Opportunity[] = (data ?? []) as Opportunity[];
+  let opportunities: Opportunity[] = (data ?? []) as Opportunity[];
+
+  // Sort by month order (January to December)
+  opportunities = opportunities.sort((a, b) => {
+    const monthA = parseDeadlineMonth(a.deadline);
+    const monthB = parseDeadlineMonth(b.deadline);
+    if (monthA !== monthB) return monthA - monthB;
+    
+    // If same month, sort by newest first
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+
+  // Apply pagination after sorting
+  opportunities = opportunities.slice(0, itemsPerPage);
 
   return (
     <main className="min-h-screen bg-slate-50">
