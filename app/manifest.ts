@@ -71,5 +71,5 @@ export default function manifest(): MetadataRoute.Manifest {
       },
     ],
     prefer_related_applications: false,
-  };
+  } as MetadataRoute.Manifest;
 }
