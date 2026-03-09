@@ -33,6 +33,29 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "maskable",
       },
     ],
+    screenshots: [
+      {
+        src: "/screenshots/home-desktop.png",
+        sizes: "1280x720",
+        type: "image/png",
+        form_factor: "wide",
+        label: "GbanaMarket homepage on desktop",
+      },
+      {
+        src: "/screenshots/home-mobile.png",
+        sizes: "390x844",
+        type: "image/png",
+        form_factor: "narrow",
+        label: "GbanaMarket homepage on mobile",
+      },
+      {
+        src: "/screenshots/opportunities-mobile.png",
+        sizes: "390x844",
+        type: "image/png",
+        form_factor: "narrow",
+        label: "Opportunities page on mobile",
+      },
+    ],
     shortcuts: [
       {
         name: "Buy Product",
