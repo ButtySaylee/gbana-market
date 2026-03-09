@@ -11,6 +11,8 @@ type BeforeInstallPromptEvent = Event & {
 const APK_SHA256 =
   "7495429A802BD29A5C253552F2CAC526A241AD474A3F31B3666BD7D30A7D0A0D";
 
+const GITHUB_RELEASES_URL = "https://github.com/ButtySaylee/gbana-market/releases/download/v1.0.0/GbanaMarket.apk";
+
 export default function AndroidInstallOptions() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isAndroid, setIsAndroid] = useState(false);
@@ -109,12 +111,13 @@ export default function AndroidInstallOptions() {
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <a
-            href="/downloads/GbanaMarket.apk"
-            download
+            href={GITHUB_RELEASES_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-lg bg-[#002147] px-4 py-2 text-sm font-semibold text-white hover:bg-[#001733]"
           >
             <Download className="h-4 w-4" />
-            Download GbanaMarket.apk
+            Download APK
           </a>
           <span className="text-xs text-slate-500">Size: 1.88 MB</span>
         </div>

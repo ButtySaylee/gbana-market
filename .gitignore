@@ -18,6 +18,8 @@
 /out/
 /public/sw.js
 /public/workbox-*.js
+/public/downloads/
+*.apk
 
 # production
 /build
